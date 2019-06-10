@@ -38,12 +38,13 @@ namespace InterfaceLiftLifter
             int totalFound = 0;
 
             //These likely do not need to be changed but if things are not being found by the driver, you might want to verify that they are correct. 
-            //numberOfPagesXPath and currentPageXPath are from the "On page 1 of 229" like text that is above the first image on the page. Inspect whichever number you want, then right click on the element and copy the xpath. 
+            //numberOfPagesXPath and currentPageXPath are from the "You are on Page 1 of 229" like text that is above the first image on the page. Inspect whichever number you want, then right click on the element and copy the xpath. 
             //linksFromPageXPath is the same idea as setting the above variables but you inspect the Download button for an image.
             string numberOfPagesXPath = "//*[@id='page']/div[4]/div[1]/p[2]/b[2]";
             string currentPageXPath = "//*[@id='page']/div[4]/div[1]/p[2]/b[1]";
             string linksFromPageXPath = "//*[contains(@id,'download_')]/a";
 
+            //If the URL structure changes, you may need to change these to grab the correct parts.
             var urlSegments = new Uri(firstURL).Segments;
             string imageSize = urlSegments[5].Trim('/');
             string imageCategory = urlSegments[4].Trim('/');
@@ -68,13 +69,16 @@ namespace InterfaceLiftLifter
                     //Get number of pages by grabbing "You are on Page 1 of 229"
                     int numofpages = Convert.ToInt32(driver.FindElement(By.XPath(numberOfPagesXPath)).Text);
 
+                    string baseURL = "https://interfacelift.com/wallpaper/downloads/downloads/" + imageCategory + "/" + imageSize + "/index{0}.html";
+
                     for (int count = startingPageNumber; count <= numofpages; count++)
                     {
                         //If we're not on the first run, 
                         if (count > 1)
                         {
                             //load the next page
-                            driver.Navigate().GoToUrl(@"https://interfacelift.com/wallpaper/downloads/downloads/wide_16:9/2560x1440/index" + count + ".html");
+                            //driver.Navigate().GoToUrl(baseURL + count + ".html");
+                            driver.Navigate().GoToUrl(string.Format(baseURL, count));
 
                             //Wait until its loaded
                             wait.Until<bool>((d) => { return d.Title.Contains(pageTitle); });
