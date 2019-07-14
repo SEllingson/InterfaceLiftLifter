@@ -14,6 +14,8 @@ using System.Text.RegularExpressions;
 
 //TODO:
 // Convert output to JSON - text file has IDs and URL with Fowarded URL in it in a JSON format
+// Moq tests because interfacelift is down again...
+// Split some stuff into functions so testing is easier?
 
 namespace InterfaceLiftLifter
 {
